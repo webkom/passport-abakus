@@ -1,0 +1,19 @@
+{
+  "name": "passport-abakus",
+  "version": "0.0.0",
+  "description": "Use Abakus.no api with passport",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Webkom <webkom@abakus.no> (http://abakus.no/)",
+  "license": "MIT",
+  "dependencies": {
+    "memjs": "^0.8.5",
+    "passport-local": "^1.0.0",
+    "request": "^2.40.0"
+  },
+  "devDependencies": {
+    "bailey": "0.0.13"
+  }
+}
