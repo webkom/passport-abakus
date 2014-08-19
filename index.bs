@@ -4,7 +4,7 @@ import memjs
 
 cache = memjs.Client.create()
 
-abakusStrategy = new passportLocal.Strategy((username, password, done) ->
+strategy = new passportLocal.Strategy((username, password, done) ->
     url = 'https://abakus.no/api/#{process.env.ABAKUS_TOKEN}/user/check/'
     data = { form: { username: username, password: password } }
 
@@ -22,16 +22,18 @@ abakusStrategy = new passportLocal.Strategy((username, password, done) ->
     )
 )
 
-serializeAbakusUser = (user, done) ->
+serializeUser = (user, done) ->
     cache.set(user.username, JSON.stringify(user))
     done(null, user.username)
 
-deserializeAbakusUser = (username, done) ->
+deserializeUser = (username, done) ->
     cache.get(username, (err, value, key) ->
         user = JSON.parse(value)
         done(null, user)
     )
 
-export abakusStrategy
-export serializeAbakusUser 
-export deserializeAbakusUser 
+export {
+    abakusStrategy: strategy
+    serializeAbakusUser: serializeUser
+    deserializeAbakusUser: deserializeUser
+}
