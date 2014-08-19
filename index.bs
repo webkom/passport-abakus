@@ -13,7 +13,7 @@ abakusStrategy = new passportLocal.Strategy((username, password, done) ->
             done(null, false)
         else
             user = JSON.parse(body).user
-            if user and user.auth and user.is_abakom
+            if user and user.auth
                 user.username = username
                 done(null, user)
             else
