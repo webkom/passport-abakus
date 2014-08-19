@@ -6,6 +6,14 @@
   "scripts": {
     "test": "mocha"
   },
+  "files": [
+    "index.js",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/webkom/passport-abakus.git"
+  },
   "author": "Webkom <webkom@abakus.no> (http://abakus.no/)",
   "license": "MIT",
   "dependencies": {
