@@ -1,5 +1,7 @@
 # passport-abakus
 
+[![Build Status](https://travis-ci.org/webkom/passport-abakus.svg)](https://travis-ci.org/webkom/passport-abakus)
+
 ```bash
 npm install passport-abakus
 ```
