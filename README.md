@@ -1,7 +1,7 @@
 # passport-abakus
 
 ```bash
-npm install git+https://github.com/webkom/passport-abakus.git
+npm install passport-abakus
 ```
 
 passport-abakus is a passport strategy that can be used to to authenticate users 
