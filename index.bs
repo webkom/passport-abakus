@@ -2,7 +2,7 @@ import passport-local as passportLocal
 import request
 import memjs
 
-cache = memjs.Client.create()
+cache = memjs.Client.create('localhost')
 
 strategy = (options) ->
     options = options or {}

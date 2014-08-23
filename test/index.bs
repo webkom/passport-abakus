@@ -8,7 +8,7 @@ import ../index: abakusStrategy, serializeAbakusUser, deserializeAbakusUser
 
 chai.use(chaiPassportStrategy)
 expect = chai.expect
-cache = memjs.Client.create()
+cache = memjs.Client.create('localhost')
 
 createApiMock = (response, status) ->
     scope = nock('https://abakus.no')
