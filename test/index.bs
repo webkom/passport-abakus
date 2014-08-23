@@ -1,0 +1,151 @@
+import should
+import chai
+import nock
+import memjs
+import chai-passport-strategy as chaiPassportStrategy
+
+import ../index: abakusStrategy, serializeAbakusUser, deserializeAbakusUser
+
+chai.use(chaiPassportStrategy)
+expect = chai.expect
+cache = memjs.Client.create()
+
+createApiMock = (response, status) ->
+    scope = nock('https://abakus.no')
+                .post('/api/test/user/check/')
+                .reply(status or 200, response)
+    return scope
+
+describe('passport-abakus', () ->
+    describe('abakusStrategy', () ->
+        it('fail when api has a bad response', (done) ->
+            createApiMock({ error: '' }, 400)
+
+            chai.passport.use(abakusStrategy())
+                .fail((info) ->
+                    expect(info.message).to.equal('Error in API response')
+                    done()
+                ).req((req) ->
+                  req.query = {
+                      username: 'test'
+                      password: 'test'
+                  }
+                ).authenticate()
+        )
+
+        it('fail when api rejects the credentials', (done) ->
+            createApiMock({ user: { auth: false } })
+
+            chai.passport.use(abakusStrategy())
+                .fail((info) ->
+                    expect(info.message).to.equal('Bad credentials')
+                    done()
+                ).req((req) ->
+                  req.query = {
+                      username: 'test'
+                      password: 'test'
+                  }
+                ).authenticate()
+        )
+
+        it('success when api accepts the credentials', (done) ->
+            createApiMock({ user: {
+                username: 'test',
+                committes: ['Webkom']
+                is_abakom: true
+                auth: true
+            }})
+
+            chai.passport.use(abakusStrategy())
+                .success((user, info) ->
+                    expect(user.username).to.equal('test')
+                    expect(user.auth).to.be.true
+                    done()
+                ).req((req) ->
+                  req.query = {
+                      username: 'test'
+                      password: 'test'
+                  }
+                ).authenticate()
+        )
+        describe('requireAbakom option', () ->
+            it('fail when user is not a member of abakom', (done) ->
+                createApiMock({ user: {
+                    username: 'test',
+                    committes: []
+                    is_abakom: false
+                    auth: true
+                }})
+
+                chai.passport.use(abakusStrategy({ requireAbakom: true }))
+                    .fail((info) ->
+                        expect(info.message).to.equal('Not in abakom')
+                        done()
+                    ).req((req) ->
+                      req.query = {
+                          username: 'test'
+                          password: 'test'
+                      }
+                    ).authenticate()
+            )
+            it('success when user is a member of abakom', (done) ->
+                createApiMock({ user: {
+                    username: 'test',
+                    committes: ['Webkom']
+                    is_abakom: true
+                    auth: true
+                }})
+
+                chai.passport.use(abakusStrategy({ requireAbakom: true }))
+                    .success((user, info) ->
+                        expect(user.username).to.equal('test')
+                        expect(user.is_abakom).to.be.true
+                        expect(user.auth).to.be.true
+                        done()
+                    ).req((req) ->
+                      req.query = {
+                          username: 'test'
+                          password: 'test'
+                      }
+                    ).authenticate()
+            )
+        )
+    )
+    describe('serializing the user data with memcached', () ->
+        user = {
+            username: 'dumbledore'
+            name: 'Albus Dumbledore'
+            committes: []
+            is_abakom: true
+            auth: true
+        }
+
+        beforeEach(() ->
+            cache.delete(user.username)
+        )
+
+        it('should serialize the user data', (done) ->
+            serializeAbakusUser(user, (err, username) ->
+                expect(username).to.equal(user.username)
+                cache.get(username, (err, value, key) ->
+                    savedUser = JSON.parse(value)
+                    expect(savedUser.username).to.equal(user.username)
+                    expect(savedUser.name).to.equal(user.name)
+                    expect(savedUser.is_abakom).to.equal(user.is_abakom)
+                    expect(savedUser).not.to.include.keys('auth')
+                    done()
+                )
+            )
+        )
+
+        it('should deserialize the user data', (done) ->
+            cache.set(user.username, JSON.stringify(user))
+            deserializeAbakusUser(user.username, (err, savedUser) ->
+                expect(savedUser.username).to.equal(user.username)
+                expect(savedUser.name).to.equal(user.name)
+                expect(savedUser.is_abakom).to.equal(user.is_abakom)
+                done()
+            )
+        )
+    )
+)

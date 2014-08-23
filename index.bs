@@ -4,25 +4,35 @@ import memjs
 
 cache = memjs.Client.create()
 
-strategy = new passportLocal.Strategy((username, password, done) ->
-    url = 'https://abakus.no/api/#{process.env.ABAKUS_TOKEN}/user/check/'
-    data = { form: { username: username, password: password } }
+strategy = (options) ->
+    options = options or {}
+    return new passportLocal.Strategy((username, password, done) ->
+        url = 'https://abakus.no/api/#{process.env.ABAKUS_TOKEN}/user/check/'
+        data = { form: { username: username, password: password } }
 
-    request.post(url, data, (error, response, body) ->
-        if error
-            done(null, false)
-        else
-            user = JSON.parse(body).user
-            if user and user.auth
-                user.username = username
-                done(null, user)
+        request.post(url, data, (error, response, body) ->
+            data = JSON.parse(body)
+            if error or not data.hasOwnProperty('user')
+                done(null, false, { message: 'Error in API response' })
             else
-                done(null, false)
-
+                user = data.user
+                if user.auth
+                    if options.requireAbakom
+                        if user.is_abakom
+                            user.username = username
+                            done(null, user)
+                        else
+                            done(null, false, { message: 'Not in abakom' })
+                    else
+                        user.username = username
+                        done(null, user)
+                else
+                    done(null, false, { message: 'Bad credentials' })
+        )
     )
-)
 
 serializeUser = (user, done) ->
+    delete user.auth
     cache.set(user.username, JSON.stringify(user))
     done(null, user.username)
 

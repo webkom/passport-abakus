@@ -4,7 +4,7 @@
   "description": "Use Abakus.no api with passport",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "make test",
   },
   "files": [
     "index.js",
@@ -17,11 +17,18 @@
   "author": "Webkom <webkom@abakus.no> (http://abakus.no/)",
   "license": "MIT",
   "dependencies": {
+    "bailey": "*",
     "memjs": "^0.8.5",
     "passport-local": "^1.0.0",
-    "request": "^2.40.0"
   },
   "devDependencies": {
-    "bailey": "0.0.13"
+    "chai-passport-strategy": "^0.2.0",
+    "istanbul": "^0.3.0",
+    "mocha": "^1.21.4",
+    "nock": "^0.45.0",
+    "sinon": "^1.10.3",
+    "chai": "^1.9.1",
+    "request": "^2.40.0",
+    "should": "^4.0.4"
   }
 }
