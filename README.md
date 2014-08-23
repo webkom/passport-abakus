@@ -1,12 +1,13 @@
 # passport-abakus
 
 [![Build Status](https://travis-ci.org/webkom/passport-abakus.svg)](https://travis-ci.org/webkom/passport-abakus)
+[![Coverage Status](https://coveralls.io/repos/webkom/passport-abakus/badge.png)](https://coveralls.io/r/webkom/passport-abakus)
 
 ```bash
 npm install passport-abakus
 ```
 
-passport-abakus is a passport strategy that can be used to to authenticate users 
+passport-abakus is a passport strategy that can be used to to authenticate users
 against the API of abakus.no. If you would like to use it you need a API token.
 Contact webkom@abakus.no to request one.
 
