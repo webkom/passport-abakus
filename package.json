@@ -22,13 +22,14 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
+    "chai": "^1.9.1",
     "chai-passport-strategy": "^0.2.0",
+    "coveralls": "^2.11.1",
     "istanbul": "^0.3.0",
     "mocha": "^1.21.4",
     "nock": "^0.45.0",
-    "sinon": "^1.10.3",
-    "chai": "^1.9.1",
     "request": "^2.40.0",
-    "should": "^4.0.4"
+    "should": "^4.0.4",
+    "sinon": "^1.10.3"
   }
 }
