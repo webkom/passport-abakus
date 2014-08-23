@@ -19,7 +19,7 @@ fairly the same except it is not necessary to write the strategy.
 var passport = require("passport");
 var passportAbakus = require("passport-abakus");
 
-passport.use(passportAbakus.abakusStrategy);
+passport.use(passportAbakus.abakusStrategy());
 passport.serializeUser(passportAbakus.serializeAbakusUser);
 passport.deserializeUser(passportAbakus.deserializeAbakusUser);
 
@@ -28,6 +28,13 @@ app.use(passport.initialize());
 
 In addition to add the strategy in your app. You must make sure that the
 API token is stored in a environment variable called `ABAKUS_TOKEN`
+
+### Options
+`abakusStrategy` takes options as an object. The different options are listed
+below.
+
+* `requireAbakom` (default: *false*) - if set to *true* any user that is not a
+member of abakom will not be able to log in.
 
 ## Contribute
 Open an issue or a pull-request with your fix or awesome new feature.
