@@ -33,8 +33,9 @@ strategy = (options) ->
 
 serializeUser = (user, done) ->
     delete user.auth
-    cache.set(user.username, JSON.stringify(user))
-    done(null, user.username)
+    cache.set(user.username, JSON.stringify(user), (err, success) ->
+        done(null, user.username)
+    )
 
 deserializeUser = (username, done) ->
     cache.get(username, (err, value, key) ->

@@ -143,14 +143,15 @@ describe('passport-abakus', () ->
         )
 
         it('should deserialize the user data', (done) ->
-            cache.set(user.username, JSON.stringify(user))
-            deserializeAbakusUser(user.username, (err, savedUser) ->
-                if err
-                    return done(err)
-                expect(savedUser.username).to.equal(user.username)
-                expect(savedUser.name).to.equal(user.name)
-                expect(savedUser.is_abakom).to.equal(user.is_abakom)
-                done()
+            cache.set(user.username, JSON.stringify(user), (err, success) ->
+                deserializeAbakusUser(user.username, (err, savedUser) ->
+                    if err
+                        return done(err)
+                    expect(savedUser.username).to.equal(user.username)
+                    expect(savedUser.name).to.equal(user.name)
+                    expect(savedUser.is_abakom).to.equal(user.is_abakom)
+                    done()
+                )
             )
         )
     )
