@@ -18,7 +18,12 @@ createApiMock = (response, status) ->
 
 describe('passport-abakus', () ->
     describe('abakusStrategy', () ->
-        it('fail when api has a bad response', (done) ->
+        it('should throw error if ABAKUS_TOKEN is not in environment variables', () ->
+            delete process.env.ABAKUS_TOKEN
+            expect(abakusStrategy).to.throw(Error)
+            process.env.ABAKUS_TOKEN = 'test'
+        )
+        it('should fail when api has a bad response', (done) ->
             createApiMock({ error: '' }, 400)
 
             chai.passport.use(abakusStrategy())
@@ -33,7 +38,7 @@ describe('passport-abakus', () ->
                 ).authenticate()
         )
 
-        it('fail when api rejects the credentials', (done) ->
+        it('should fail when api rejects the credentials', (done) ->
             createApiMock({ user: { auth: false } })
 
             chai.passport.use(abakusStrategy())
