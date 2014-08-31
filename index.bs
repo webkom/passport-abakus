@@ -6,7 +6,7 @@ cache = memjs.Client.create('localhost')
 
 strategy = (options) ->
     if not process.env.ABAKUS_TOKEN
-        throw new Error('Missing ABAKUS_TOKEN')
+        throw new Error('Missing environment variable ABAKUS_TOKEN')
     options = options or {}
     return new passportLocal.Strategy((username, password, done) ->
         url = 'https://abakus.no/api/#{process.env.ABAKUS_TOKEN}/user/check/'
