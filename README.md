@@ -17,11 +17,9 @@ fairly the same except it is not necessary to write the strategy.
 
 ```javascript
 var passport = require("passport");
-var passportAbakus = require("passport-abakus");
+var abakusStrategy = require("passport-abakus");
 
-passport.use(passportAbakus.abakusStrategy());
-passport.serializeUser(passportAbakus.serializeAbakusUser);
-passport.deserializeUser(passportAbakus.deserializeAbakusUser);
+passport.use(abakusStrategy());
 
 app.use(passport.initialize());
 ```

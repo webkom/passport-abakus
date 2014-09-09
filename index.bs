@@ -1,10 +1,7 @@
 import passport-local as passportLocal
 import request
-import memjs
 
-cache = memjs.Client.create('localhost')
-
-strategy = (options) ->
+export (options) ->
     if not process.env.ABAKUS_TOKEN
         throw new Error('Missing environment variable ABAKUS_TOKEN')
     options = options or {}
@@ -32,21 +29,3 @@ strategy = (options) ->
                     done(null, false, { message: 'Bad credentials' })
         )
     )
-
-serializeUser = (user, done) ->
-    delete user.auth
-    cache.set(user.username, JSON.stringify(user), (err, success) ->
-        done(null, user.username)
-    )
-
-deserializeUser = (username, done) ->
-    cache.get(username, (err, value, key) ->
-        user = JSON.parse(value)
-        done(null, user)
-    )
-
-export {
-    abakusStrategy: strategy
-    serializeAbakusUser: serializeUser
-    deserializeAbakusUser: deserializeUser
-}
