@@ -71,6 +71,53 @@ describe('passport-abakus', () ->
                   }
                 ).authenticate()
         )
+
+        describe('requireCommittee option', () ->
+            it('fail when an user is not in a provided committee', (done) ->
+                createApiMock({ user: {
+                    username: 'test',
+                    committees: ['Webkom'],
+                    is_abakom: true,
+                    auth: true
+                }})
+
+                chai.passport.use(abakusStrategy({ requireCommittee: 'LaBamba' }))
+                    .fail((info) ->
+                        expect(info.message).to.equal('Not in LaBamba')
+                        done()
+                    ).req((req) ->
+                        req.query = {
+                            username: 'test',
+                            password: 'test'
+                        }
+                    ).authenticate()
+            )
+
+            it('success when user is a member of a provided committee', (done) ->
+                createApiMock({ user: {
+                    username: 'test',
+                    committees: ['Webkom'],
+                    is_abakom: true,
+                    auth: true
+                }})
+
+                chai.passport.use(abakusStrategy({ requireCommittee: 'Webkom' }))
+                    .success((user, info) ->
+                        expect(user.username).to.equal('test')
+                        expect(user.committees.indexOf('Webkom')).to.be.above(-1)
+                        expect(user.is_abakom).to.be.true
+                        expect(user.auth).to.be.true
+                        done()
+                    ).req((req) ->
+                        req.query = {
+                            username: 'test',
+                            password: 'test'
+                        }
+                    ).authenticate()
+
+            )
+        )
+
         describe('requireAbakom option', () ->
             it('fail when user is not a member of abakom', (done) ->
                 createApiMock({ user: {
